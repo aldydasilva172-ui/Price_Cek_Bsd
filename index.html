@@ -25,6 +25,16 @@ h2 { margin-bottom: 20px; }
     margin: auto;
 }
 
+input {
+    padding: 14px;
+    width: 85%;
+    max-width: 320px;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    font-size: 16px;
+    background: white;
+}
+
 button {
     padding: 12px 25px;
     margin-top: 15px;
@@ -55,7 +65,14 @@ button {
 
 <body>
 
-<h2>Price Checker BSD PRO</h2>
+<h2>Price Checker BSD Joss</h2>
+
+<!-- MANUAL INPUT -->
+<input type="text" id="manualInput" placeholder="Ketik kode barang">
+<br>
+<button onclick="searchManual()">Cek Manual</button>
+
+<h3>ATAU SCAN BARCODE</h3>
 
 <div id="reader"></div>
 <br>
@@ -86,7 +103,6 @@ async function loadData() {
         skipEmptyLines: true,
         complete: function(results) {
             data = results.data;
-            console.log("Data Loaded:", data.length);
         }
     });
 }
@@ -109,7 +125,7 @@ function showResult(item) {
         </div>`;
 }
 
-// SEARCH PRODUCT
+// SEARCH
 function searchProduct(code) {
 
     const product = data.find(item =>
@@ -125,7 +141,13 @@ function searchProduct(code) {
     }
 }
 
-// START SCANNER PRO MODE
+// MANUAL
+function searchManual() {
+    const code = document.getElementById("manualInput").value;
+    searchProduct(code);
+}
+
+// START SCANNER
 function startScanner() {
 
     html5QrCode = new Html5Qrcode("reader");
@@ -158,10 +180,7 @@ function startScanner() {
                 }, 1500);
             }
         }
-    ).catch(err => {
-        alert("Kamera tidak bisa dibuka. Pastikan HTTPS & izin kamera aktif.");
-        console.log(err);
-    });
+    );
 }
 
 // STOP
