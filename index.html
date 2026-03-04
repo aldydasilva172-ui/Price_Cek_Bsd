@@ -2,10 +2,10 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Price Checker BSD PRO</title>
+<title>Price Checker BSD ZXING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://unpkg.com/@zxing/library@latest"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <style>
@@ -14,25 +14,13 @@ body {
     text-align: center;
     padding: 20px;
     background: #f8fafc;
-    color: #1f2937;
 }
 
-h2 { margin-bottom: 20px; }
-
-#reader {
+video {
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
     margin: auto;
-}
-
-input {
-    padding: 14px;
-    width: 85%;
-    max-width: 320px;
-    border-radius: 14px;
-    border: 1px solid #e5e7eb;
-    font-size: 16px;
-    background: white;
+    border-radius: 15px;
 }
 
 button {
@@ -42,58 +30,50 @@ button {
     border: none;
     background: #111827;
     color: white;
-    font-weight: 500;
-    cursor: pointer;
 }
 
 .box {
     margin-top: 25px;
-    padding: 25px;
+    padding: 20px;
     border-radius: 20px;
     background: white;
     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
 .price {
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: bold;
     color: #16a34a;
-    margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Price Checker BSD Joss</h2>
+<h2>Price Checker BSD - ZXing</h2>
 
-<!-- MANUAL INPUT -->
 <input type="text" id="manualInput" placeholder="Ketik kode barang">
 <br>
 <button onclick="searchManual()">Cek Manual</button>
 
-<h3>ATAU SCAN BARCODE</h3>
+<h3>ATAU SCAN</h3>
 
-<div id="reader"></div>
+<video id="video"></video>
 <br>
-<button onclick="startScanner()">START SCAN</button>
-<button onclick="stopScanner()">STOP</button>
+<button onclick="startScan()">START</button>
+<button onclick="stopScan()">STOP</button>
 
 <div id="result"></div>
-
-<audio id="beep" preload="auto">
-<source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
-</audio>
 
 <script>
 
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
 
 let data = [];
-let html5QrCode;
-let lastScan = "";
+let codeReader;
+let selectedDeviceId;
 
-// LOAD DATA
+// Load Data
 async function loadData() {
     const response = await fetch(sheetURL);
     const csvText = await response.text();
@@ -107,7 +87,7 @@ async function loadData() {
     });
 }
 
-// SHOW RESULT
+// Show Result
 function showResult(item) {
 
     const nama = item["Nama Barang"] || "-";
@@ -125,7 +105,7 @@ function showResult(item) {
         </div>`;
 }
 
-// SEARCH
+// Search
 function searchProduct(code) {
 
     const product = data.find(item =>
@@ -141,56 +121,29 @@ function searchProduct(code) {
     }
 }
 
-// MANUAL
 function searchManual() {
     const code = document.getElementById("manualInput").value;
     searchProduct(code);
 }
-// START SCANNER PRO MODE
-function startScanner() {
 
-    html5QrCode = new Html5Qrcode("reader");
+// ZXING SCAN
+async function startScan() {
 
-    html5QrCode.start(
-        { facingMode: "environment" },
-        {
-            fps: 20,
-            qrbox: { width: 320, height: 160 },
-            aspectRatio: 1.777,
-            disableFlip: true,
-            formatsToSupport: Object.values(Html5QrcodeSupportedFormats),
-            experimentalFeatures: {
-                useBarCodeDetectorIfSupported: true
-            }
-        },
-        (decodedText) => {
+    codeReader = new ZXing.BrowserMultiFormatReader();
 
-            if (decodedText !== lastScan) {
+    const videoInputDevices = await codeReader.listVideoInputDevices();
+    selectedDeviceId = videoInputDevices[0].deviceId;
 
-                lastScan = decodedText;
-
-                document.getElementById("beep").play();
-                navigator.vibrate?.(100);
-
-                searchProduct(decodedText);
-
-                setTimeout(() => {
-                    lastScan = "";
-                }, 1500);
-            }
+    codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
+        if (result) {
+            searchProduct(result.text);
         }
-    ).catch(err => {
-        alert("Kamera tidak bisa dibuka. Pastikan HTTPS & izin kamera aktif.");
-        console.log(err);
     });
 }
 
-// STOP
-function stopScanner() {
-    if (html5QrCode) {
-        html5QrCode.stop().then(() => {
-            html5QrCode.clear();
-        });
+function stopScan() {
+    if (codeReader) {
+        codeReader.reset();
     }
 }
 
