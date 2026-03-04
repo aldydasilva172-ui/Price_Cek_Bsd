@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<title>Price Checker BSD</title>
+<meta charset="UTF-8">
+<title>Price Checker BSD Joss</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://unpkg.com/html5-qrcode"></script>
@@ -22,7 +23,8 @@ h2 {
 }
 
 #reader {
-    width: 320px;
+    width: 100%;
+    max-width: 350px;
     margin: auto;
     margin-top: 20px;
 }
@@ -46,6 +48,10 @@ button {
     color: white;
     font-weight: 500;
     cursor: pointer;
+}
+
+button:hover {
+    background: #374151;
 }
 
 .box {
@@ -89,6 +95,7 @@ const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gO
 let data = [];
 let html5QrCode;
 
+// ================= LOAD DATA =================
 async function loadData() {
     const response = await fetch(sheetURL);
     const csvText = await response.text();
@@ -98,11 +105,12 @@ async function loadData() {
         skipEmptyLines: true,
         complete: function(results) {
             data = results.data;
-            console.log("Data Loaded");
+            console.log("Data Loaded:", data.length);
         }
     });
 }
 
+// ================= SHOW RESULT =================
 function showResult(item) {
 
     const nama = item["Nama Barang"] || "-";
@@ -121,7 +129,10 @@ function showResult(item) {
         </div>`;
 }
 
+// ================= SEARCH =================
 function searchProduct(code) {
+
+    if (!code) return;
 
     const product = data.find(item =>
         item["Kode Barang"] &&
@@ -141,6 +152,7 @@ function searchManual() {
     searchProduct(code);
 }
 
+// ================= SCANNER (IPHONE STABLE) =================
 function startScanner() {
 
     html5QrCode = new Html5Qrcode("reader");
@@ -148,31 +160,32 @@ function startScanner() {
     html5QrCode.start(
         { facingMode: "environment" },
         {
-            fps: 15,
-            qrbox: function(viewfinderWidth, viewfinderHeight) {
-                let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-                return {
-                    width: minEdge * 0.9,
-                    height: minEdge * 0.4
-                };
-            },
+            fps: 10,
+            qrbox: { width: 280, height: 150 },
+            aspectRatio: 1.777,
+            disableFlip: true,
             formatsToSupport: [
                 Html5QrcodeSupportedFormats.EAN_13,
                 Html5QrcodeSupportedFormats.EAN_8,
                 Html5QrcodeSupportedFormats.UPC_A,
                 Html5QrcodeSupportedFormats.UPC_E,
-                Html5QrcodeSupportedFormats.CODE_128
+                Html5QrcodeSupportedFormats.CODE_128,
+                Html5QrcodeSupportedFormats.CODE_39,
+                Html5QrcodeSupportedFormats.ITF
             ],
             experimentalFeatures: {
                 useBarCodeDetectorIfSupported: true
             }
         },
         (decodedText) => {
+            navigator.vibrate?.(200);
             stopScanner();
             searchProduct(decodedText);
-        }
+        },
+        (errorMessage) => {}
     ).catch(err => {
-        console.log("Scanner error:", err);
+        alert("Kamera tidak bisa dibuka. Pastikan HTTPS & izin kamera aktif.");
+        console.log(err);
     });
 }
 
