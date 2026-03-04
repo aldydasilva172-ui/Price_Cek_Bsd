@@ -146,8 +146,7 @@ function searchManual() {
     const code = document.getElementById("manualInput").value;
     searchProduct(code);
 }
-
-// START SCANNER
+// START SCANNER PRO MODE
 function startScanner() {
 
     html5QrCode = new Html5Qrcode("reader");
@@ -180,7 +179,10 @@ function startScanner() {
                 }, 1500);
             }
         }
-    );
+    ).catch(err => {
+        alert("Kamera tidak bisa dibuka. Pastikan HTTPS & izin kamera aktif.");
+        console.log(err);
+    });
 }
 
 // STOP
