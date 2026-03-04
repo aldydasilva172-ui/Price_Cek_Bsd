@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Price Checker BSD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    padding: 20px;
+    background: #f8fafc;
+    color: #1f2937;
+}
+
+h2 {
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+#reader {
+    width: 320px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+input {
+    padding: 14px;
+    width: 85%;
+    max-width: 320px;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    font-size: 16px;
+    background: white;
+}
+
+button {
+    padding: 12px 25px;
+    margin-top: 15px;
+    border-radius: 30px;
+    border: none;
+    background: #111827;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.box {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 25px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.price {
+    font-size: 26px;
+    font-weight: 700;
+    color: #16a34a;
+    margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Price Checker BSD Joss</h2>
+
+<input type="text" id="manualInput" placeholder="Ketik kode barang">
+<br>
+<button onclick="searchManual()">Cek Manual</button>
+
+<h3>ATAU SCAN BARCODE</h3>
+
+<div id="reader"></div>
+<br>
+<button onclick="startScanner()">Start Scan</button>
+<button onclick="stopScanner()">Stop Scan</button>
+
+<div id="result"></div>
+
+<script>
+
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
+
+let data = [];
+let html5QrCode;
+
+async function loadData() {
+    const response = await fetch(sheetURL);
+    const csvText = await response.text();
+
+    Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            data = results.data;
+            console.log("Data Loaded");
+        }
+    });
+}
+
+function showResult(item) {
+
+    const nama = item["Nama Barang"] || "-";
+    const qty = item["Qty"] || "0";
+    const jenis = item["Jenis Barang"] || "";
+
+    let hargaRaw = item["Harga"] || "0";
+    hargaRaw = hargaRaw.toString().replace(/[^\d]/g, "");
+    const harga = Number(hargaRaw) || 0;
+
+    document.getElementById("result").innerHTML =
+        `<div class="box">
+            <h3>${nama}</h3>
+            <p>Stok: ${qty} ${jenis}</p>
+            <div class="price">Rp ${harga.toLocaleString("id-ID")}</div>
+        </div>`;
+}
+
+function searchProduct(code) {
+
+    const product = data.find(item =>
+        item["Kode Barang"] &&
+        item["Kode Barang"].toString().trim() === code.toString().trim()
+    );
+
+    if (product) {
+        showResult(product);
+    } else {
+        document.getElementById("result").innerHTML =
+            "<div class='box'>❌ Produk tidak ditemukan</div>";
+    }
+}
+
+function searchManual() {
+    const code = document.getElementById("manualInput").value;
+    searchProduct(code);
+}
+
+function startScanner() {
+
+    html5QrCode = new Html5Qrcode("reader");
+
+    html5QrCode.start(
+        { facingMode: "environment" },
+        {
+            fps: 15,
+            qrbox: function(viewfinderWidth, viewfinderHeight) {
+                let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+                return {
+                    width: minEdge * 0.9,
+                    height: minEdge * 0.4
+                };
+            },
+            formatsToSupport: [
+                Html5QrcodeSupportedFormats.EAN_13,
+                Html5QrcodeSupportedFormats.EAN_8,
+                Html5QrcodeSupportedFormats.UPC_A,
+                Html5QrcodeSupportedFormats.UPC_E,
+                Html5QrcodeSupportedFormats.CODE_128
+            ],
+            experimentalFeatures: {
+                useBarCodeDetectorIfSupported: true
+            }
+        },
+        (decodedText) => {
+            stopScanner();
+            searchProduct(decodedText);
+        }
+    ).catch(err => {
+        console.log("Scanner error:", err);
+    });
+}
+
+function stopScanner() {
+    if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+            html5QrCode.clear();
+        });
+    }
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
