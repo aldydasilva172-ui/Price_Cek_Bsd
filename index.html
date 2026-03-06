@@ -21,7 +21,7 @@ h2 { margin-bottom: 10px; }
 
 video {
     width: 100%;
-    max-width: 150px;
+    max-width: 200px;
     margin: auto;
     border-radius: 15px;
 }
@@ -71,7 +71,7 @@ button {
 
 <body>
 
-<h2>PRICE CHECKER BSD NEW</h2>
+<h2>PRICE CHECKER BSD</h2>
 
 <input type="text" id="manualInput" placeholder="Ketik kode barang">
 <br>
@@ -96,6 +96,7 @@ let codeReader = null;
 
 // ================= LOAD DATA =================
 async function loadData() {
+
     const response = await fetch(sheetURL);
     const csvText = await response.text();
 
@@ -151,7 +152,9 @@ function searchProduct(code) {
 
 
 function searchManual() {
+
     const code = document.getElementById("manualInput").value;
+
     searchProduct(code);
 }
 
@@ -168,7 +171,22 @@ async function startScan() {
         return;
     }
 
-    const selectedDeviceId = videoInputDevices[0].deviceId;
+    // pilih kamera belakang
+    let selectedDeviceId = videoInputDevices[0].deviceId;
+
+    videoInputDevices.forEach(device => {
+
+        const label = device.label.toLowerCase();
+
+        if (label.includes("back") || 
+            label.includes("rear") || 
+            label.includes("environment")) {
+
+            selectedDeviceId = device.deviceId;
+
+        }
+
+    });
 
     codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
 
@@ -178,22 +196,37 @@ async function startScan() {
 
             searchProduct(barcode);
 
-            // isi otomatis ke input manual
             document.getElementById("manualInput").value = barcode;
 
-            // STOP kamera setelah berhasil scan
-            stopScan();
+            stopScan(); // otomatis stop kamera
+
         }
 
     });
 }
 
+
+// ================= STOP CAMERA =================
 function stopScan() {
+
     if (codeReader) {
+
         codeReader.reset();
-        document.getElementById("video").srcObject = null;
+
+        const video = document.getElementById("video");
+
+        if (video.srcObject) {
+
+            video.srcObject.getTracks().forEach(track => track.stop());
+
+            video.srcObject = null;
+
+        }
+
     }
+
 }
+
 
 loadData();
 
