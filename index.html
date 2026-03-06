@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <title>Price Checker BSD ZXING FINAL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <script src="https://unpkg.com/@zxing/library@latest"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
 <style>
 body {
     font-family: 'Segoe UI', sans-serif;
@@ -23,7 +21,7 @@ h2 {
 
 video {
     width: 100%;
-max-width: 150px;
+    max-width: 200px;
     margin: auto;
     border-radius: 15px;
 }
@@ -62,27 +60,21 @@ button {
     font-weight: bold;
     color: #16a34a;
 }
+
+.update {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #6b7280;
+}
 </style>
 </head>
-
 <body>
-
 <h2>PRICE CHECKER BSD</h2>
-
-<!-- MANUAL INPUT -->
 <input type="text" id="manualInput" placeholder="Ketik kode barang">
 <br>
 <button onclick="searchManual()">Cek Manual</button>
-
 <h3>ATAU SCAN BARCODE</h3>
-
-<video id="video"></video>
-<br>
-<button onclick="startScan()">START SCAN</button>
-<button onclick="stopScan()">STOP</button>
-
 <div id="result"></div>
-
 <script>
 
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
@@ -90,8 +82,10 @@ const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gO
 let data = [];
 let codeReader = null;
 
-// ================= LOAD DATA =================
+
+// LOAD DATA
 async function loadData() {
+
     const response = await fetch(sheetURL);
     const csvText = await response.text();
 
@@ -103,9 +97,11 @@ async function loadData() {
             console.log("Data Loaded:", data.length);
         }
     });
+
 }
 
-// ================= SHOW RESULT =================
+
+// SHOW RESULT
 function showResult(item) {
 
     const nama = item["Nama Barang"] || "-";
@@ -116,15 +112,19 @@ function showResult(item) {
     hargaRaw = hargaRaw.toString().replace(/[^\d]/g, "");
     const harga = Number(hargaRaw) || 0;
 
+    const update = item["Update"] || "-";
+
     document.getElementById("result").innerHTML =
         `<div class="box">
             <h3>${nama}</h3>
             <p>Stok: ${qty} : ${jenis}</p>
             <div class="price">Rp ${harga.toLocaleString("id-ID")}</div>
+            <div class="update">Update: ${update}</div>
         </div>`;
 }
 
-// ================= SEARCH =================
+
+// SEARCH PRODUCT
 function searchProduct(code) {
 
     const product = data.find(item =>
@@ -133,19 +133,30 @@ function searchProduct(code) {
     );
 
     if (product) {
+
         showResult(product);
+
     } else {
+
         document.getElementById("result").innerHTML =
-            "<div class='box'>❌ Produk tidak ditemukan</div>";
+        "<div class='box'>❌ Produk tidak ditemukan</div>";
+
     }
+
 }
 
+
+// MANUAL SEARCH
 function searchManual() {
+
     const code = document.getElementById("manualInput").value;
+
     searchProduct(code);
+
 }
 
-// ================= ZXING SCANNER =================
+
+// START SCAN
 async function startScan() {
 
     codeReader = new ZXing.BrowserMultiFormatReader();
@@ -153,28 +164,48 @@ async function startScan() {
     const videoInputDevices = await codeReader.listVideoInputDevices();
 
     if (videoInputDevices.length === 0) {
+
         alert("Tidak ada kamera ditemukan");
         return;
+
     }
 
     const selectedDeviceId = videoInputDevices[0].deviceId;
 
     codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
+
         if (result) {
+
             searchProduct(result.text);
+
+            // MATIKAN KAMERA OTOMATIS
+            stopScan();
+
         }
+
     });
+
 }
 
+
+// STOP SCAN
 function stopScan() {
+
     if (codeReader) {
+
         codeReader.reset();
+
     }
+
+    document.getElementById("video").srcObject = null;
+
 }
 
+
+// LOAD DATA SAAT PAGE DIBUKA
 loadData();
 
 </script>
-
 </body>
 </html>
+:::
