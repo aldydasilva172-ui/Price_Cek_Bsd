@@ -17,9 +17,7 @@ body {
     color: #1f2937;
 }
 
-h2 {
-    margin-bottom: 10px;
-}
+h2 { margin-bottom: 10px; }
 
 video {
     width: 100%;
@@ -65,7 +63,7 @@ button {
 
 .update {
     margin-top: 10px;
-    font-size: 10px;
+    font-size: 14px;
     color: #6b7280;
 }
 </style>
@@ -73,7 +71,7 @@ button {
 
 <body>
 
-<h2>PRICE CHECKER BSD</h2>
+<h2>PRICE CHECKER BSD NEW</h2>
 
 <input type="text" id="manualInput" placeholder="Ketik kode barang">
 <br>
@@ -173,15 +171,27 @@ async function startScan() {
     const selectedDeviceId = videoInputDevices[0].deviceId;
 
     codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
+
         if (result) {
-            searchProduct(result.text);
+
+            const barcode = result.text;
+
+            searchProduct(barcode);
+
+            // isi otomatis ke input manual
+            document.getElementById("manualInput").value = barcode;
+
+            // STOP kamera setelah berhasil scan
+            stopScan();
         }
+
     });
 }
 
 function stopScan() {
     if (codeReader) {
         codeReader.reset();
+        document.getElementById("video").srcObject = null;
     }
 }
 
@@ -191,3 +201,4 @@ loadData();
 
 </body>
 </html>
+•••
