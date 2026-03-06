@@ -2,207 +2,196 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Price Checker BSD ZXING FINAL</title>
+<title>Price Checker BSD</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://unpkg.com/@zxing/library@latest"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
-body {
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-    padding: 20px;
-    background: #f8fafc;
-    color: #1f2937;
+body{
+font-family:'Segoe UI',sans-serif;
+text-align:center;
+padding:20px;
+background:#f8fafc;
 }
 
-h2 {
-    margin-bottom: 10px;
+video{
+width:100%;
+max-width:220px;
+border-radius:12px;
+margin-top:10px;
 }
 
-video {
-    width: 100%;
-    max-width: 200px;
-    margin: auto;
-    border-radius: 15px;
+input{
+padding:12px;
+width:90%;
+max-width:320px;
+border-radius:10px;
+border:1px solid #ddd;
+margin-top:15px;
 }
 
-input {
-    padding: 14px;
-    width: 100%;
-    max-width: 320px;
-    border-radius: 14px;
-    border: 1px solid #e5e7eb;
-    font-size: 16px;
-    margin-top: 15px;
+button{
+padding:10px 20px;
+margin-top:10px;
+border:none;
+border-radius:20px;
+background:#111827;
+color:white;
+cursor:pointer;
 }
 
-button {
-    padding: 12px 25px;
-    margin-top: 15px;
-    border-radius: 30px;
-    border: none;
-    background: #111827;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
+.box{
+margin-top:20px;
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 10px 20px rgba(0,0,0,0.08);
 }
 
-.box {
-    margin-top: 25px;
-    padding: 20px;
-    border-radius: 20px;
-    background: white;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+.price{
+font-size:26px;
+font-weight:bold;
+color:#16a34a;
 }
 
-.price {
-    font-size: 24px;
-    font-weight: bold;
-    color: #16a34a;
-}
-
-.update {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #6b7280;
+.update{
+font-size:14px;
+color:#6b7280;
+margin-top:8px;
 }
 </style>
 </head>
 <body>
-<h2>PRICE CHECKER BSD NEW</h2>
-<input type="text" id="manualInput" placeholder="Ketik kode barang">
+<h2>PRICE CHECKER BSD</h2>
+<input id="manualInput" placeholder="Ketik kode barang">
 <br>
 <button onclick="searchManual()">Cek Manual</button>
-<h3>ATAU SCAN BARCODE</h3>
+<h3>SCAN BARCODE</h3>
 <div id="result"></div>
 <script>
 
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
+const sheetURL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
 
-let data = [];
-let codeReader = null;
+let data=[];
+let codeReader;
 
 
 // LOAD DATA
-async function loadData() {
+async function loadData(){
 
-    const response = await fetch(sheetURL);
-    const csvText = await response.text();
+const res=await fetch(sheetURL);
+const csv=await res.text();
 
-    Papa.parse(csvText, {
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-            data = results.data;
-            console.log("Data Loaded:", data.length);
-        }
-    });
+Papa.parse(csv,{
+header:true,
+skipEmptyLines:true,
+complete:function(results){
+
+data=results.data;
+
+}
+});
 
 }
 
 
 // SHOW RESULT
-function showResult(item) {
+function showResult(item){
 
-    const nama = item["Nama Barang"] || "-";
-    const qty = item["Qty"] || "0";
-    const jenis = item["Jenis Barang"] || "-";
+const nama=item["Nama Barang"]||"-";
+const qty=item["Qty"]||"0";
+const jenis=item["Jenis Barang"]||"-";
+const update=item["Update"]||"-";
 
-    let hargaRaw = item["Harga"] || "0";
-    hargaRaw = hargaRaw.toString().replace(/[^\d]/g, "");
-    const harga = Number(hargaRaw) || 0;
+let hargaRaw=item["Harga"]||"0";
+hargaRaw=hargaRaw.toString().replace(/[^\d]/g,"");
+const harga=Number(hargaRaw)||0;
 
-    const update = item["Update"] || "-";
-
-    document.getElementById("result").innerHTML =
-        `<div class="box">
-            <h3>${nama}</h3>
-            <p>Stok: ${qty} : ${jenis}</p>
-            <div class="price">Rp ${harga.toLocaleString("id-ID")}</div>
-            <div class="update">Update: ${update}</div>
-        </div>`;
-}
-
-
-// SEARCH PRODUCT
-function searchProduct(code) {
-
-    const product = data.find(item =>
-        item["Kode Barang"] &&
-        item["Kode Barang"].toString().trim() === code.toString().trim()
-    );
-
-    if (product) {
-
-        showResult(product);
-
-    } else {
-
-        document.getElementById("result").innerHTML =
-        "<div class='box'>❌ Produk tidak ditemukan</div>";
-
-    }
+document.getElementById("result").innerHTML=
+`
+<div class="box">
+<h3>${nama}</h3>
+<p>Stok: ${qty} : ${jenis}</p>
+<div class="price">Rp ${harga.toLocaleString("id-ID")}</div>
+<div class="update">Update: ${update}</div>
+</div>
+`;
 
 }
 
 
-// MANUAL SEARCH
-function searchManual() {
+// SEARCH
+function searchProduct(code){
 
-    const code = document.getElementById("manualInput").value;
+const product=data.find(item=>
+item["Kode Barang"] &&
+item["Kode Barang"].toString().trim()==code.toString().trim()
+);
 
-    searchProduct(code);
+if(product){
+
+showResult(product);
+
+}else{
+
+document.getElementById("result").innerHTML=
+"<div class='box'>❌ Produk tidak ditemukan</div>";
+
+}
+
+}
+
+
+// MANUAL
+function searchManual(){
+
+const code=document.getElementById("manualInput").value;
+searchProduct(code);
 
 }
 
 
 // START SCAN
-async function startScan() {
+async function startScan(){
 
-    codeReader = new ZXing.BrowserMultiFormatReader();
+codeReader=new ZXing.BrowserMultiFormatReader();
 
-    const videoInputDevices = await codeReader.listVideoInputDevices();
+try{
 
-    if (videoInputDevices.length === 0) {
+await codeReader.decodeFromVideoDevice(null,'video',(result,err)=>{
 
-        alert("Tidak ada kamera ditemukan");
-        return;
+if(result){
 
-    }
+searchProduct(result.text);
 
-    const selectedDeviceId = videoInputDevices[0].deviceId;
+stopScan();
 
-    codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
+}
 
-        if (result) {
+});
 
-            searchProduct(result.text);
+}catch(err){
 
-            // MATIKAN KAMERA OTOMATIS
-            stopScan();
+alert("Kamera tidak bisa dibuka");
 
-        }
-
-    });
+}
 
 }
 
 
-// STOP SCAN
-function stopScan() {
+// STOP
+function stopScan(){
 
-    if (codeReader) {
+if(codeReader){
 
-        codeReader.reset();
+codeReader.reset();
 
-    }
-
-    document.getElementById("video").srcObject = null;
+}
 
 }
 
 
-// LOAD DATA SAAT PAGE DIBUKA
+// LOAD
 loadData();
 
 </script>
