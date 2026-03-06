@@ -62,12 +62,16 @@ margin-top:8px;
 </style>
 </head>
 <body>
-<h2>PRICE CHECKER BSD</h2>
+<h2>PRICE CHECKER BSD NEW</h2>
 <input id="manualInput" placeholder="Ketik kode barang">
 <br>
 <button onclick="searchManual()">Cek Manual</button>
 <h3>SCAN BARCODE</h3>
+<br>
 <div id="result"></div>
+<audio id="beep">
+<source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
+</audio>
 <script>
 
 const sheetURL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
@@ -95,7 +99,7 @@ data=results.data;
 }
 
 
-// SHOW RESULT
+// RESULT
 function showResult(item){
 
 const nama=item["Nama Barang"]||"-";
@@ -130,6 +134,8 @@ item["Kode Barang"].toString().trim()==code.toString().trim()
 
 if(product){
 
+document.getElementById("beep").play();
+
 showResult(product);
 
 }else{
@@ -142,16 +148,17 @@ document.getElementById("result").innerHTML=
 }
 
 
-// MANUAL
+// MANUAL SEARCH
 function searchManual(){
 
 const code=document.getElementById("manualInput").value;
+
 searchProduct(code);
 
 }
 
 
-// START SCAN
+// START CAMERA
 async function startScan(){
 
 codeReader=new ZXing.BrowserMultiFormatReader();
@@ -179,7 +186,7 @@ alert("Kamera tidak bisa dibuka");
 }
 
 
-// STOP
+// STOP CAMERA
 function stopScan(){
 
 if(codeReader){
@@ -191,7 +198,7 @@ codeReader.reset();
 }
 
 
-// LOAD
+// LOAD DATA
 loadData();
 
 </script>
