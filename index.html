@@ -78,7 +78,7 @@ box-shadow:0 15px 40px rgba(0,0,0,0.3);
 
 .inputBox{
 position:relative;
-margin-bottom:15px;
+margin-bottom:8px;
 }
 
 .inputBox input{
@@ -104,6 +104,39 @@ box-shadow:0 0 0 4px rgba(56,189,248,0.15);
 color:#cbd5e1;
 }
 
+.suggestionsBox{
+margin-top:8px;
+background:rgba(255,255,255,0.08);
+border-radius:16px;
+overflow:hidden;
+max-height:220px;
+overflow-y:auto;
+backdrop-filter:blur(12px);
+}
+
+.suggestionItem{
+padding:12px 14px;
+cursor:pointer;
+border-bottom:1px solid rgba(255,255,255,0.06);
+transition:0.2s;
+}
+
+.suggestionItem:hover{
+background:rgba(255,255,255,0.1);
+}
+
+.suggestionCode{
+font-size:13px;
+font-weight:600;
+color:#38bdf8;
+}
+
+.suggestionName{
+font-size:13px;
+color:#e2e8f0;
+margin-top:2px;
+}
+
 .mainBtn{
 width:100%;
 padding:15px;
@@ -115,6 +148,7 @@ font-weight:600;
 color:white;
 cursor:pointer;
 transition:0.3s;
+margin-top:12px;
 }
 
 .mainBtn:hover{
@@ -274,8 +308,10 @@ color:#94a3b8;
 <div class="card">
 
 <div class="inputBox">
-<input id="manualInput" placeholder="Ketik kode barang atau barcode">
+<input id="manualInput" placeholder="Ketik barcode atau nama barang">
 </div>
+
+<div id="suggestions" class="suggestionsBox"></div>
 
 <button class="mainBtn" onclick="searchManual()">
 CEK HARGA
@@ -286,7 +322,7 @@ SCAN BARCODE
 </div>
 
 <div class="cameraBox">
-<video id="video"></video>
+<video id="video" playsinline></video>
 <div class="scanLine"></div>
 </div>
 
@@ -316,9 +352,12 @@ PRICE CHECKER BSD © 2026
 
 <script>
 
-const sheetURL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
+const sheetURL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
 
-let data=[];
+let data = [];
+let suggestionData = [];
+let productMap = {};
 let codeReader;
 
 
@@ -327,8 +366,8 @@ async function loadData(){
 
 try{
 
-const res=await fetch(sheetURL);
-const csv=await res.text();
+const res = await fetch(sheetURL);
+const csv = await res.text();
 
 Papa.parse(csv,{
 header:true,
@@ -336,9 +375,27 @@ skipEmptyLines:true,
 
 complete:(results)=>{
 
-data=results.data;
+data = results.data;
 
-document.getElementById("loading").innerHTML=
+suggestionData = results.data.map(item => ({
+kode: item["Kode Barang"] || "",
+nama: item["Nama Barang"] || ""
+}));
+
+data.forEach(item=>{
+
+const key = item["Kode Barang"]
+?.toString()
+.trim()
+.toLowerCase();
+
+if(key){
+productMap[key] = item;
+}
+
+});
+
+document.getElementById("loading").innerHTML =
 `✅ ${data.length} produk berhasil dimuat`;
 
 setTimeout(()=>{
@@ -351,7 +408,7 @@ document.getElementById("loading").style.display="none";
 
 }catch(err){
 
-document.getElementById("loading").innerHTML=
+document.getElementById("loading").innerHTML =
 "❌ Gagal memuat database";
 
 }
@@ -362,16 +419,20 @@ document.getElementById("loading").innerHTML=
 // SHOW RESULT
 function showResult(item){
 
-const nama=item["Nama Barang"]||"-";
-const qty=item["Qty"]||"0";
-const jenis=item["Jenis Barang"]||"-";
+const nama = item["Nama Barang"] || "-";
+const qty = item["Qty"] || "0";
+const jenis = item["Jenis Barang"] || "-";
 
-let harga=item["Harga"]||"0";
-harga=harga.toString().replace(/[^\d]/g,"");
+let harga = item["Harga"] || "0";
 
-const update=item["Update"]||"-";
+harga = harga.toString().replace(/[^\d]/g,"");
 
-document.getElementById("result").innerHTML=
+const finalHarga = Number(harga || 0);
+
+const update = item["Update"] || "-";
+
+document.getElementById("result").innerHTML =
+
 `
 <div class="resultCard">
 
@@ -384,7 +445,7 @@ Stok : ${qty} • ${jenis}
 </div>
 
 <div class="price">
-Rp ${Number(harga).toLocaleString("id-ID")}
+Rp ${finalHarga.toLocaleString("id-ID")}
 </div>
 
 <div class="update">
@@ -404,10 +465,23 @@ if(!code){
 return;
 }
 
-const product=data.find(item=>
-item["Kode Barang"] &&
-item["Kode Barang"].toString().trim()===code.toString().trim()
+const normalized =
+code.toString().trim().toLowerCase();
+
+let product = productMap[normalized];
+
+if(!product){
+
+product = data.find(item =>
+
+item["Nama Barang"]
+?.toString()
+.toLowerCase()
+.includes(normalized)
+
 );
+
+}
 
 if(product){
 
@@ -415,7 +489,7 @@ showResult(product);
 
 }else{
 
-document.getElementById("result").innerHTML=
+document.getElementById("result").innerHTML =
 `
 <div class="notFound">
 ❌ Produk tidak ditemukan
@@ -430,31 +504,137 @@ document.getElementById("result").innerHTML=
 // MANUAL SEARCH
 function searchManual(){
 
-const code=document.getElementById("manualInput").value.trim();
+const code =
+document.getElementById("manualInput")
+.value
+.trim();
 
 searchProduct(code);
 
 }
 
 
+// AUTOCOMPLETE
+function showSuggestions(keyword){
+
+const box =
+document.getElementById("suggestions");
+
+if(!keyword){
+
+box.innerHTML = "";
+return;
+
+}
+
+const results = suggestionData.filter(item =>
+
+item.kode.toLowerCase().includes(keyword.toLowerCase()) ||
+
+item.nama.toLowerCase().includes(keyword.toLowerCase())
+
+).slice(0,10);
+
+if(results.length === 0){
+
+box.innerHTML = "";
+return;
+
+}
+
+box.innerHTML = results.map(item => `
+
+<div class="suggestionItem"
+onclick="selectSuggestion('${item.kode}')">
+
+<div class="suggestionCode">
+${item.kode}
+</div>
+
+<div class="suggestionName">
+${item.nama}
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+// SELECT SUGGESTION
+function selectSuggestion(kode){
+
+document.getElementById("manualInput").value =
+kode;
+
+document.getElementById("suggestions").innerHTML =
+"";
+
+searchProduct(kode);
+
+}
+
+
+// INPUT EVENT
+let typingTimer;
+
+document.getElementById("manualInput")
+.addEventListener("input",function(){
+
+clearTimeout(typingTimer);
+
+typingTimer = setTimeout(()=>{
+
+showSuggestions(this.value);
+
+},150);
+
+});
+
+
+// ENTER SEARCH
+document.getElementById("manualInput")
+.addEventListener("keypress",function(e){
+
+if(e.key==="Enter"){
+
+searchManual();
+
+document.getElementById("suggestions").innerHTML =
+"";
+
+}
+
+});
+
+
 // START SCAN
 function startScan(){
 
-codeReader=new ZXing.BrowserMultiFormatReader();
+window.__scanned = false;
+
+codeReader =
+new ZXing.BrowserMultiFormatReader();
 
 codeReader.decodeFromConstraints({
 
 video:{
-facingMode:{ ideal:"environment" }
+facingMode:{ ideal:"environment" },
+width:{ ideal:1280 },
+height:{ ideal:720 }
 }
 
 },"video",(result,err)=>{
 
-if(result){
+if(result && !window.__scanned){
 
-const code=result.text;
+window.__scanned = true;
 
-document.getElementById("manualInput").value=code;
+const code = result.text;
+
+document.getElementById("manualInput").value =
+code;
 
 searchProduct(code);
 
@@ -469,40 +649,32 @@ stopScan();
 }
 
 
-// STOP CAMERA
+// STOP SCAN
 function stopScan(){
 
 if(codeReader){
 
 codeReader.reset();
 
-const video=document.getElementById("video");
+const video =
+document.getElementById("video");
 
 if(video.srcObject){
 
-video.srcObject.getTracks().forEach(track=>track.stop());
+video.srcObject
+.getTracks()
+.forEach(track=>track.stop());
 
-video.srcObject=null;
+video.srcObject = null;
+
+}
 
 }
 
 }
 
-}
 
-
-// ENTER SEARCH
-document.getElementById("manualInput")
-.addEventListener("keypress",function(e){
-
-if(e.key==="Enter"){
-searchManual();
-}
-
-});
-
-
-// LOAD
+// LOAD DATABASE
 loadData();
 
 </script>
