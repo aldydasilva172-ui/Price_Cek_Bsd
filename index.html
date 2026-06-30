@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Price Check BSD</title>
+<title>Price CHECK BSD</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script src="https://unpkg.com/@zxing/library@latest"></script>
@@ -163,10 +163,24 @@ color:#cbd5e1;
 letter-spacing:1px;
 }
 
+.cameraBox{
+position:relative;
+overflow:hidden;
+border-radius:22px;
+border:1px solid rgba(255,255,255,0.08);
+background:black;
+}
+
+video{
+width:100%;
+display:block;
+max-height:260px;
+object-fit:cover;
+}
+
 @keyframes scan{
 0%{top:10px;}
 50%{top:85%;}
-
 100%{top:10px;}
 }
 
@@ -238,7 +252,7 @@ text-align:center;
 .price{
 font-size:34px;
 font-weight:700;
-color:#22c55e;
+color:#ORANGE;
 margin-bottom:10px;
 text-align:center;
 }
@@ -280,9 +294,8 @@ color:#94a3b8;
 <div class="container">
 
 <div class="header">
-<div class="logo">🛒</div>
-<h1>PRICE CHECKER</h1>
-<div class="subtitle">BSD Smart Price Scanner</div>
+<h1>PRICE CHECK BSD </h1>
+<div class="subtitle">RANCH MARKET KEMANG</div>
 </div>
 
 <div class="card">
@@ -301,7 +314,10 @@ CEK HARGA
 SCAN BARCODE
 </div>
 
-
+<div class="cameraBox">
+<video id="video" playsinline style="display:none;"></video>
+<div class="scanLine"></div>
+</div>
 
 <div class="scanButtons">
 <button class="startBtn" onclick="startScan()">START SCAN</button>
