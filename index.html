@@ -178,22 +178,6 @@ max-height:260px;
 object-fit:cover;
 }
 
-.scanLine{
-position:absolute;
-left:0;
-right:0;
-height:3px;
-background:#22d3ee;
-box-shadow:0 0 20px #22d3ee;
-animation:scan 2s linear infinite;
-}
-
-@keyframes scan{
-0%{top:10px;}
-50%{top:85%;}
-100%{top:10px;}
-}
-
 .scanButtons{
 display:flex;
 gap:10px;
@@ -327,7 +311,6 @@ SCAN BARCODE
 
 <div class="cameraBox">
 <video id="video" playsinline></video>
-<div class="scanLine"></div>
 </div>
 
 <div class="scanButtons">
