@@ -158,9 +158,11 @@ background:black;
 
 video{
 width:100%;
+height:260px;
 display:block;
-max-height:260px;
 object-fit:cover;
+background:black;
+border-radius:22px;
 }
 
 @keyframes scan{
@@ -300,7 +302,7 @@ SCAN BARCODE
 </div>
 
 <div class="cameraBox">
-<video id="video" playsinline style="display:none;"></video>
+<video id="video" playsinline></video>
 <div class="scanLine"></div>
 </div>
 
@@ -335,7 +337,7 @@ let codeReader;
 
 async function loadData(){
 try{
-const res = await fetch(sheetURL);
+const res = await fetch(sheetURL+"&cache="+Date.now());
 const csv = await res.text();
 
 Papa.parse(csv,{
@@ -344,6 +346,10 @@ skipEmptyLines:true,
 complete:(results)=>{
 
 data = results.data;
+  localStorage.setItem(
+"priceData",
+JSON.stringify(data)
+);
 
 suggestionData = results.data.map(item => ({
 kode: item["Kode Barang"] || "",
@@ -478,41 +484,61 @@ document.getElementById("suggestions").innerHTML = "";
 });
 
 function startScan(){
-window.__scanned = false;
+
+if(!navigator.mediaDevices){
+alert("Kamera tidak tersedia");
+return;
+}
+
+
+window.__scanned=false;
+
 
 codeReader = new ZXing.BrowserMultiFormatReader();
 
-codeReader.decodeFromConstraints({
+
+codeReader.decodeFromConstraints(
+{
 video:{
-facingMode:{ ideal:"environment" },
-width:{ ideal:1280 },
-height:{ ideal:720 }
+facingMode:"environment",
+width:{ideal:1280},
+height:{ideal:720}
 }
-},"video",(result)=>{
+},
+
+"video",
+
+(result)=>{
+
 
 if(result && !window.__scanned){
-window.__scanned = true;
 
-const code = result.text;
-document.getElementById("manualInput").value = code;
+
+window.__scanned=true;
+
+
+let code=result.text;
+
+
+document.getElementById("manualInput").value=code;
+
+
 searchProduct(code);
 
-navigator.vibrate?.(150);
+
+navigator.vibrate?.(200);
+
+
 stopScan();
-}
-});
+
+
 }
 
-function stopScan(){
-if(codeReader){
-codeReader.reset();
+}
 
-const video = document.getElementById("video");
-if(video.srcObject){
-video.srcObject.getTracks().forEach(t=>t.stop());
-video.srcObject = null;
-}
-}
+);
+
+
 }
 
 loadData();
