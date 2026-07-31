@@ -114,10 +114,12 @@ box-shadow:0 0 0 4px rgba(56,189,248,0.15);
 }
 
 .inputBox input::placeholder{
+text-align:center;
 color:#cbd5e1;
 }
 
 .suggestionsBox{
+text-align:center;
 margin-top:8px;
 background:rgba(255,255,255,0.08);
 border-radius:16px;
@@ -155,18 +157,21 @@ width:100%;
 padding:15px;
 border:none;
 border-radius:18px;
-background:linear-gradient(135deg,#06b6d4,#3b82f6);
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:#fff;
 font-size:15px;
 font-weight:600;
-color:white;
+font-family:'Poppins',sans-serif;
 cursor:pointer;
-transition:0.3s;
-margin-top:12px;
+transition:all .3s ease;
+box-shadow:0 8px 20px rgba(37,99,235,.35);
 }
-
 .mainBtn:hover{
 transform:translateY(-2px);
-box-shadow:0 10px 20px rgba(59,130,246,0.3);
+box-shadow:0 12px 28px rgba(37,99,235,.45);
+}
+.mainBtn:active{
+transform:scale(0.98);
 }
 
 .orText{
@@ -212,38 +217,66 @@ padding:14px;
 border:none;
 border-radius:16px;
 font-weight:600;
-cursor:pointer;
 font-family:'Poppins',sans-serif;
-transition:0.3s;
+cursor:pointer;
+transition:all .3s ease;
+color:white;
+box-shadow:0 8px 18px rgba(0,0,0,.25);
 }
 
 .startBtn{
-background:#10b981;
-color:white;
+background:linear-gradient(135deg,#10b981,#059669);
+}
+
+.startBtn:hover{
+transform:translateY(-3px);
+box-shadow:0 12px 24px rgba(16,185,129,.35);
+}
+
+.startBtn:active{
+transform:scale(0.98);
 }
 
 .stopBtn{
-background:#ef4444;
-color:white;
+background:linear-gradient(135deg,#ef4444,#dc2626);
 }
 
-.scanButtons button:hover{
-transform:translateY(-2px);
+.stopBtn:hover{
+transform:translateY(-3px);
+box-shadow:0 12px 24px rgba(239,68,68,.35);
+}
+
+.stopBtn:active{
+transform:scale(0.98);
 }
 
 .resultCard{
 margin-top:22px;
-padding:22px;
+padding:24px;
 border-radius:24px;
-background:rgba(255,255,255,0.08);
-border:1px solid rgba(255,255,255,0.1);
-animation:fade 0.3s ease;
 
-/* CENTRING FIX */
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,0.12);
+
+box-shadow:
+0 10px 30px rgba(0,0,0,0.25);
+
+animation:fade .35s ease;
+transition:all .3s ease;
+
+/* CENTER */
 display:flex;
 flex-direction:column;
 align-items:center;
 text-align:center;
+}
+
+.resultCard:hover{
+transform:translateY(-3px);
+box-shadow:0 15px 35px rgba(0,0,0,0.35);
 }
 
 @keyframes fade{
