@@ -273,6 +273,10 @@ font-size:11px;
 color:#94a3b8;
 }
 
+.cameraBox{
+transition:0.3s ease;
+}
+
 </style>
 </head>
 
@@ -301,7 +305,7 @@ CEK HARGA
 SCAN BARCODE
 </div>
 
-<div class="cameraBox">
+<div class="cameraBox" id="cameraBox" style="display:none;">
 <video id="video" playsinline></video>
 <div class="scanLine"></div>
 </div>
@@ -484,11 +488,18 @@ document.getElementById("suggestions").innerHTML = "";
 });
 
 function startScan(){
+stopScan();
 
-if(!navigator.mediaDevices){
-alert("Kamera tidak tersedia");
-return;
-}
+const cameraBox =
+document.getElementById("cameraBox");
+
+const video =
+document.getElementById("video");
+
+
+// tampilkan box kamera
+cameraBox.style.display="block";
+video.style.display="block";
 
 
 window.__scanned=false;
@@ -498,6 +509,7 @@ codeReader = new ZXing.BrowserMultiFormatReader();
 
 
 codeReader.decodeFromConstraints(
+
 {
 video:{
 facingMode:"environment",
@@ -517,26 +529,81 @@ if(result && !window.__scanned){
 window.__scanned=true;
 
 
-let code=result.text;
+// ambil barcode
+const code=result.text;
 
 
 document.getElementById("manualInput").value=code;
 
 
+// cari produk
 searchProduct(code);
 
 
+// getar
 navigator.vibrate?.(200);
 
 
+// tutup kamera otomatis
 stopScan();
 
 
 }
 
+
 }
 
 );
+
+
+}
+
+function stopScan(){
+
+// hentikan ZXing
+if(codeReader){
+
+try{
+codeReader.reset();
+}catch(e){}
+
+codeReader=null;
+
+}
+
+
+// hentikan kamera secara paksa
+const video = document.getElementById("video");
+
+
+if(video.srcObject){
+
+const tracks = video.srcObject.getTracks();
+
+tracks.forEach(track=>{
+track.stop();
+});
+
+video.srcObject=null;
+
+}
+
+
+// kosongkan video
+video.pause();
+video.removeAttribute("src");
+
+
+// sembunyikan box kamera
+const cameraBox =
+document.getElementById("cameraBox");
+
+
+cameraBox.style.display="none";
+
+
+// reset status scan
+window.__scanned=false;
 
 
 }
