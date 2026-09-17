@@ -37,6 +37,7 @@ overflow:auto;
 min-height:100dvh;
 padding:25px 15px;
 color:white;
+
 display:flex;
 justify-content:center;
 align-items:stretch;
@@ -46,12 +47,14 @@ body::before{
 content:"";
 position:fixed;
 inset:0;
+
 background:
 linear-gradient(
 180deg,
 rgba(0,0,0,0.10),
 rgba(0,0,0,0.40)
 );
+
 pointer-events:none;
 z-index:-1;
 }
@@ -62,6 +65,7 @@ max-width:430px;
 
 display:flex;
 flex-direction:column;
+
 min-height:calc(100vh - 50px);
 }
 
@@ -84,14 +88,17 @@ color:#cbd5e1;
 
 .card{
 background:rgba(15,23,42,0.25);
+
 backdrop-filter:blur(20px);
 -webkit-backdrop-filter:blur(20px);
 
 border:1px solid rgba(255,255,255,0.15);
+
 border-radius:28px;
 
 box-shadow:
 0 20px 50px rgba(0,0,0,0.45);
+
 padding:20px;
 }
 
@@ -102,22 +109,33 @@ margin-bottom:8px;
 
 .inputBox input{
 width:100%;
+
 padding:16px 18px;
+
 border:none;
 outline:none;
+
 border-radius:18px;
+
 background:rgba(255,255,255,0.08);
+
 color:white;
+
 font-size:16px;
 font-family:'Poppins',sans-serif;
+
 border:1px solid rgba(255,255,255,0.08);
+
 transition:0.3s;
+
 text-align:center;
 }
 
 .inputBox input:focus{
 border-color:#38bdf8;
-box-shadow:0 0 0 4px rgba(56,189,248,0.15);
+
+box-shadow:
+0 0 0 4px rgba(56,189,248,0.15);
 }
 
 .inputBox input::placeholder{
@@ -127,19 +145,29 @@ color:#cbd5e1;
 
 .suggestionsBox{
 text-align:center;
+
 margin-top:8px;
+
 background:rgba(255,255,255,0.08);
+
 border-radius:16px;
+
 overflow:hidden;
+
 max-height:220px;
 overflow-y:auto;
+
 backdrop-filter:blur(12px);
 }
 
 .suggestionItem{
 padding:12px 14px;
+
 cursor:pointer;
-border-bottom:1px solid rgba(255,255,255,0.06);
+
+border-bottom:
+1px solid rgba(255,255,255,0.06);
+
 transition:0.2s;
 }
 
@@ -161,48 +189,84 @@ margin-top:2px;
 
 .mainBtn{
 width:100%;
+
 padding:15px;
+
 border:none;
+
 border-radius:18px;
-background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+background:
+linear-gradient(
+135deg,
+#2563eb,
+#1d4ed8
+);
+
 color:#fff;
+
 font-size:15px;
 font-weight:600;
+
 font-family:'Poppins',sans-serif;
+
 cursor:pointer;
+
 transition:all .3s ease;
-box-shadow:0 8px 20px rgba(37,99,235,.35);
+
+box-shadow:
+0 8px 20px rgba(37,99,235,.35);
 }
+
 .mainBtn:hover{
 transform:translateY(-2px);
-box-shadow:0 12px 28px rgba(37,99,235,.45);
+
+box-shadow:
+0 12px 28px rgba(37,99,235,.45);
 }
+
 .mainBtn:active{
 transform:scale(0.98);
 }
 
 .orText{
 text-align:center;
+
 margin:18px 0;
+
 font-size:13px;
+
 color:#cbd5e1;
+
 letter-spacing:1px;
 }
 
 .cameraBox{
 position:relative;
+
 overflow:hidden;
+
 border-radius:22px;
-border:1px solid rgba(255,255,255,0.08);
+
+border:
+1px solid rgba(255,255,255,0.08);
+
 background:black;
+
+transition:0.3s ease;
 }
 
 video{
 width:100%;
+
 height:260px;
+
 display:block;
+
 object-fit:cover;
+
 background:black;
+
 border-radius:22px;
 }
 
@@ -214,30 +278,49 @@ border-radius:22px;
 
 .scanButtons{
 display:flex;
+
 gap:10px;
+
 margin-top:15px;
 }
 
 .scanButtons button{
 flex:1;
+
 padding:14px;
+
 border:none;
+
 border-radius:16px;
+
 font-weight:600;
+
 font-family:'Poppins',sans-serif;
+
 cursor:pointer;
+
 transition:all .3s ease;
+
 color:white;
-box-shadow:0 8px 18px rgba(0,0,0,.25);
+
+box-shadow:
+0 8px 18px rgba(0,0,0,.25);
 }
 
 .startBtn{
-background:linear-gradient(135deg,#10b981,#059669);
+background:
+linear-gradient(
+135deg,
+#10b981,
+#059669
+);
 }
 
 .startBtn:hover{
 transform:translateY(-3px);
-box-shadow:0 12px 24px rgba(16,185,129,.35);
+
+box-shadow:
+0 12px 24px rgba(16,185,129,.35);
 }
 
 .startBtn:active{
@@ -245,12 +328,19 @@ transform:scale(0.98);
 }
 
 .stopBtn{
-background:linear-gradient(135deg,#ef4444,#dc2626);
+background:
+linear-gradient(
+135deg,
+#ef4444,
+#dc2626
+);
 }
 
 .stopBtn:hover{
 transform:translateY(-3px);
-box-shadow:0 12px 24px rgba(239,68,68,.35);
+
+box-shadow:
+0 12px 24px rgba(239,68,68,.35);
 }
 
 .stopBtn:active{
@@ -259,95 +349,135 @@ transform:scale(0.98);
 
 .resultCard{
 margin-top:22px;
+
 padding:24px;
+
 border-radius:24px;
 
-background:rgba(255,255,255,0.05);
+background:
+rgba(255,255,255,0.05);
+
 backdrop-filter:blur(18px);
 -webkit-backdrop-filter:blur(18px);
 
-border:1px solid rgba(255,255,255,0.12);
+border:
+1px solid rgba(255,255,255,0.12);
 
 box-shadow:
 0 10px 30px rgba(0,0,0,0.25);
 
 animation:fade .35s ease;
+
 transition:all .3s ease;
 
-/* CENTER */
 display:flex;
 flex-direction:column;
 align-items:center;
+
 text-align:center;
 }
 
 .resultCard:hover{
 transform:translateY(-3px);
-box-shadow:0 15px 35px rgba(0,0,0,0.35);
+
+box-shadow:
+0 15px 35px rgba(0,0,0,0.35);
 }
 
 @keyframes fade{
-from{opacity:0;transform:translateY(10px);}
-to{opacity:1;transform:translateY(0);}
+from{
+opacity:0;
+transform:translateY(10px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 .productName{
 font-size:22px;
+
 font-weight:700;
+
 margin-bottom:8px;
+
 text-align:center;
 }
 
 .info{
 font-size:14px;
-color: #86efac;;
+
+color:#86efac;
+
 margin-bottom:15px;
+
 text-align:center;
 }
 
 .price{
 font-size:34px;
+
 font-weight:700;
+
 color:#FFA500;
+
 margin-bottom:10px;
+
 text-align:center;
 }
 
 .update{
 font-size:11px;
+
 color:#94a3b8;
+
 text-align:center;
 }
 
 .notFound{
 margin-top:20px;
+
 padding:20px;
+
 border-radius:20px;
-background:rgba(239,68,68,0.15);
-border:1px solid rgba(239,68,68,0.3);
+
+background:
+rgba(239,68,68,0.15);
+
+border:
+1px solid rgba(239,68,68,0.3);
+
 font-weight:500;
+
 text-align:center;
 }
 
 .loading{
 margin-top:15px;
+
 font-size:13px;
+
 color:#cbd5e1;
 }
 
 .footer{
 margin-top:auto;
+
 padding-top:25px;
 padding-bottom:10px;
-border-top:1px solid rgba(255,255,255,0.08);
-text-align:center;
-font-size:11px;
-color:#94a3b8;
-letter-spacing:1px;
-}
 
-.cameraBox{
-transition:0.3s ease;
+border-top:
+1px solid rgba(255,255,255,0.08);
+
+text-align:center;
+
+font-size:11px;
+
+color:#94a3b8;
+
+letter-spacing:1px;
 }
 
 </style>
@@ -358,121 +488,276 @@ transition:0.3s ease;
 <div class="container">
 
 <div class="header">
+
 <h1>PRICE CHECK BSD </h1>
-<div class="subtitle">RANCH MARKET KEMANG</div>
+
+<div class="subtitle">
+RANCH MARKET KEMANG
 </div>
+
+</div>
+
 
 <div class="card">
 
+
 <div class="inputBox">
-<input id="manualInput" placeholder="Ketik barcode atau nama barang">
+
+<input
+id="manualInput"
+placeholder="Ketik barcode atau nama barang"
+>
+
 </div>
 
-<div id="suggestions" class="suggestionsBox"></div>
 
-<button class="mainBtn" onclick="searchManual()">
+<div
+id="suggestions"
+class="suggestionsBox">
+</div>
+
+
+<button
+class="mainBtn"
+onclick="searchManual()">
+
 CEK HARGA
+
 </button>
+
 
 <div class="orText">
 SCAN BARCODE
 </div>
 
-<div class="cameraBox" id="cameraBox" style="display:none;">
-<video id="video" playsinline></video>
+
+<div
+class="cameraBox"
+id="cameraBox"
+style="display:none;"
+>
+
+<video
+id="video"
+playsinline>
+</video>
+
 <div class="scanLine"></div>
+
 </div>
+
 
 <div class="scanButtons">
-<button class="startBtn" onclick="startScan()">START SCAN</button>
-<button class="stopBtn" onclick="stopScan()">STOP</button>
+
+<button
+class="startBtn"
+onclick="startScan()">
+
+START SCAN
+
+</button>
+
+
+<button
+class="stopBtn"
+onclick="stopScan()">
+
+STOP
+
+</button>
+
 </div>
 
-<div class="loading" id="loading">
+
+<div
+class="loading"
+id="loading">
+
 Loading database...
+
 </div>
+
 
 <div id="result"></div>
 
+
 </div>
+
 
 <div class="footer">
+
 BSD KEMANG JOSSS © 2026
-</div>
 
 </div>
+
+
+</div>
+
 
 <script>
+
 
 const sheetURL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vRQZFOJCGh_3gOGO_-an9e9lZWY_9JAl1f-MT8nnRcYB9kSnawD5tjJn9Qn6A_3NbcH0TFyuBCtWPgD/pub?gid=255796540&single=true&output=csv";
 
+
 let data = [];
+
 let suggestionData = [];
+
 let productMap = {};
+
 let codeReader;
 
+
+
+// =====================================================
+// LOAD DATABASE
+// =====================================================
+
 async function loadData(){
+
 try{
-const res = await fetch(sheetURL+"&cache="+Date.now());
-const csv = await res.text();
+
+const res =
+await fetch(
+sheetURL+"&cache="+Date.now()
+);
+
+const csv =
+await res.text();
+
 
 Papa.parse(csv,{
+
 header:true,
+
 skipEmptyLines:true,
+
 complete:(results)=>{
 
+
 data = results.data;
-  localStorage.setItem(
+
+
+// SIMPAN DATA KE LOCAL STORAGE
+localStorage.setItem(
 "priceData",
 JSON.stringify(data)
 );
 
-suggestionData = results.data.map(item => ({
-kode: item["Kode Barang"] || "",
-nama: item["Nama Barang"] || ""
+
+// DATA UNTUK SUGGESTION
+suggestionData =
+results.data.map(item => ({
+
+kode:
+item["Kode Barang"] || "",
+
+nama:
+item["Nama Barang"] || ""
+
 }));
 
+
+// BUAT PRODUCT MAP
 data.forEach(item=>{
-const key = item["Kode Barang"]?.toString().trim().toLowerCase();
+
+const key =
+item["Kode Barang"]
+?.toString()
+.trim()
+.toLowerCase();
+
+
 if(key){
+
 productMap[key] = item;
+
 }
+
 });
 
-document.getElementById("loading").innerHTML =
+
+document.getElementById(
+"loading"
+).innerHTML =
 `✅ ${data.length} produk berhasil dimuat`;
 
+
 setTimeout(()=>{
-document.getElementById("loading").style.display="none";
+
+document.getElementById(
+"loading"
+).style.display="none";
+
 },1500);
 
 }
+
 });
 
+
 }catch(err){
-document.getElementById("loading").innerHTML =
+
+document.getElementById(
+"loading"
+).innerHTML =
 "❌ Gagal memuat database";
+
 }
+
 }
+
+
+
+// =====================================================
+// SHOW RESULT
+// =====================================================
 
 function showResult(item){
 
-const nama = item["Nama Barang"] || "-";
-const barcode = item["Kode Barang"] || "-";
-const qty = item["Qty"] || "0";
-const jenis = item["Jenis Barang"] || "-";
+const nama =
+item["Nama Barang"] || "-";
 
-let harga = item["Harga"] || "0";
-harga = harga.toString().replace(/[^\d]/g,"");
+const barcode =
+item["Kode Barang"] || "-";
 
-const finalHarga = Number(harga || 0);
-const update = item["Update"] || "-";
+const jenis =
+item["Jenis Barang"] || "-";
 
-document.getElementById("result").innerHTML = `
+
+let harga =
+item["Harga"] || "0";
+
+
+harga =
+harga
+.toString()
+.replace(/[^\d]/g,"");
+
+
+const finalHarga =
+Number(harga || 0);
+
+
+const update =
+item["Update"] || "-";
+
+
+document.getElementById(
+"result"
+).innerHTML = `
+
 <div class="resultCard">
 
-<div class="productName">${nama}</div>
+
+<div class="productName">
+
+${nama}
+
+</div>
+
 
 <div style="
 font-size:14px;
@@ -481,125 +766,438 @@ margin-top:-4px;
 margin-bottom:10px;
 font-weight:500;
 letter-spacing:1px;">
+
 ( ${barcode} )
+
 </div>
+
 
 <div class="info">
-Stok : ${qty} • ${jenis}
+
+${jenis}
+
 </div>
+
 
 <div class="price">
+
 Rp ${finalHarga.toLocaleString("id-ID")}
+
 </div>
+
 
 <div class="update">
+
 Update terakhir : ${update}
+
 </div>
 
-</div>`;
+
+</div>
+
+`;
+
 }
+
+
+
+// =====================================================
+// SEARCH PRODUCT
+// =====================================================
 
 function searchProduct(code){
+
 if(!code) return;
 
-const normalized = code.toString().trim().toLowerCase();
 
-let product = productMap[normalized];
+const normalized =
+code.toString()
+.trim()
+.toLowerCase();
+
+
+const rawCode =
+normalized.replace(/\D/g,"");
+
+
+// =====================================================
+// BARCODE KHUSUS
+//
+// HANYA JIKA:
+// 1. 13 DIGIT
+// 2. DIAWALI 20
+//
+// CONTOH:
+//
+// 2074298012229
+//
+// 20       = penanda
+// 74298    = KODE BARANG
+// 01222    = DIABAIKAN
+// 9        = DIABAIKAN
+//
+// HASIL:
+// KODE BARANG = 74298
+// =====================================================
+
+if(
+rawCode.length === 13 &&
+rawCode.startsWith("20")
+){
+
+
+const extractedCode =
+rawCode.substring(2,7);
+
+
+// =====================================================
+// CARI KODE BARANG
+// =====================================================
+
+let product =
+productMap[
+extractedCode
+.toLowerCase()
+];
+
 
 if(!product){
-product = data.find(item =>
-item["Nama Barang"]?.toString().toLowerCase().includes(normalized)
+
+product =
+data.find(item =>
+
+item["Kode Barang"]
+?.toString()
+.trim()
+.toLowerCase()
+===
+extractedCode
+.toLowerCase()
+
 );
+
 }
+
+
+// =====================================================
+// PRODUK DITEMUKAN
+// =====================================================
 
 if(product){
+
 showResult(product);
+
 }else{
-document.getElementById("result").innerHTML =
-`<div class="notFound">❌ Produk tidak ditemukan</div>`;
+
+document.getElementById(
+"result"
+).innerHTML = `
+
+<div class="notFound">
+
+❌ Produk tidak ditemukan
+
+<br>
+
+<small>
+Kode Barang: ${extractedCode}
+</small>
+
+</div>
+
+`;
+
 }
+
+
+// =====================================================
+// STOP
+// Jangan lanjut ke pencarian normal
+// =====================================================
+
+return;
+
 }
+
+
+
+// =====================================================
+// BARCODE SELAIN 20
+//
+// TETAP NORMAL
+// =====================================================
+
+let product =
+productMap[normalized];
+
+
+if(!product){
+
+product =
+data.find(item =>
+
+item["Nama Barang"]
+?.toString()
+.toLowerCase()
+.includes(normalized)
+
+);
+
+}
+
+
+if(product){
+
+showResult(product);
+
+}else{
+
+document.getElementById(
+"result"
+).innerHTML =
+
+`<div class="notFound">
+❌ Produk tidak ditemukan
+</div>`;
+
+}
+
+}
+
+
+
+// =====================================================
+// SEARCH MANUAL
+// =====================================================
 
 function searchManual(){
-const code = document.getElementById("manualInput").value.trim();
+
+const code =
+document
+.getElementById("manualInput")
+.value
+.trim();
+
+
 searchProduct(code);
+
 }
+
+
+
+// =====================================================
+// SHOW SUGGESTIONS
+// =====================================================
 
 function showSuggestions(keyword){
-const box = document.getElementById("suggestions");
+
+const box =
+document.getElementById(
+"suggestions"
+);
+
 
 if(!keyword){
+
 box.innerHTML = "";
+
 return;
+
 }
 
-const results = suggestionData.filter(item =>
-item.kode.toLowerCase().includes(keyword.toLowerCase()) ||
-item.nama.toLowerCase().includes(keyword.toLowerCase())
-).slice(0,30);
+
+const results =
+suggestionData
+.filter(item =>
+
+item.kode
+.toLowerCase()
+.includes(
+keyword.toLowerCase()
+)
+
+||
+
+item.nama
+.toLowerCase()
+.includes(
+keyword.toLowerCase()
+)
+
+)
+.slice(0,30);
+
 
 if(results.length === 0){
+
 box.innerHTML = "";
+
 return;
+
 }
 
-box.innerHTML = results.map(item => `
-<div class="suggestionItem" onclick="selectSuggestion('${item.kode}')">
-<div class="suggestionCode">${item.kode}</div>
-<div class="suggestionName">${item.nama}</div>
+
+box.innerHTML =
+results.map(item => `
+
+<div
+class="suggestionItem"
+onclick="selectSuggestion('${item.kode}')"
+>
+
+<div class="suggestionCode">
+
+${item.kode}
+
 </div>
+
+
+<div class="suggestionName">
+
+${item.nama}
+
+</div>
+
+</div>
+
 `).join("");
+
 }
+
+
+
+// =====================================================
+// SELECT SUGGESTION
+// =====================================================
 
 function selectSuggestion(kode){
-document.getElementById("manualInput").value = kode;
-document.getElementById("suggestions").innerHTML = "";
+
+document.getElementById(
+"manualInput"
+).value = kode;
+
+
+document.getElementById(
+"suggestions"
+).innerHTML = "";
+
+
 searchProduct(kode);
+
 }
+
+
+
+// =====================================================
+// INPUT LISTENER
+// =====================================================
 
 let typingTimer;
 
-document.getElementById("manualInput").addEventListener("input",function(){
+
+document
+.getElementById("manualInput")
+.addEventListener(
+"input",
+function(){
+
 clearTimeout(typingTimer);
-typingTimer = setTimeout(()=>showSuggestions(this.value),150);
+
+
+typingTimer =
+setTimeout(
+()=>{
+showSuggestions(
+this.value
+);
+},
+150
+);
+
 });
 
-document.getElementById("manualInput").addEventListener("keypress",function(e){
+
+
+// =====================================================
+// ENTER
+// =====================================================
+
+document
+.getElementById("manualInput")
+.addEventListener(
+"keypress",
+function(e){
+
 if(e.key==="Enter"){
+
 searchManual();
-document.getElementById("suggestions").innerHTML = "";
+
+document.getElementById(
+"suggestions"
+).innerHTML = "";
+
 }
+
 });
+
+
+
+// =====================================================
+// START SCAN
+// =====================================================
 
 function startScan(){
+
 stopScan();
 
+
 const cameraBox =
-document.getElementById("cameraBox");
+document.getElementById(
+"cameraBox"
+);
+
 
 const video =
-document.getElementById("video");
+document.getElementById(
+"video"
+);
 
 
-// tampilkan box kamera
-cameraBox.style.display="block";
-video.style.display="block";
+// TAMPILKAN CAMERA
+cameraBox.style.display =
+"block";
+
+video.style.display =
+"block";
 
 
-window.__scanned=false;
+window.__scanned =
+false;
 
 
-codeReader = new ZXing.BrowserMultiFormatReader();
+codeReader =
+new ZXing.BrowserMultiFormatReader();
 
 
 codeReader.decodeFromConstraints(
 
 {
+
 video:{
-facingMode:"environment",
-width:{ideal:1280},
-height:{ideal:720}
+
+facingMode:
+"environment",
+
+width:{
+ideal:1280
+},
+
+height:{
+ideal:720
 }
+
+}
+
 },
 
 "video",
@@ -607,92 +1205,127 @@ height:{ideal:720}
 (result)=>{
 
 
-if(result && !window.__scanned){
+if(
+result &&
+!window.__scanned
+){
 
 
-window.__scanned=true;
+window.__scanned =
+true;
 
 
-// ambil barcode
-const code=result.text;
+// HASIL BARCODE
+const code =
+result.text;
 
 
-document.getElementById("manualInput").value=code;
+// MASUKKAN KE INPUT
+document.getElementById(
+"manualInput"
+).value = code;
 
 
-// cari produk
+// CARI PRODUK
 searchProduct(code);
 
 
-// getar
+// GETAR
 navigator.vibrate?.(200);
 
 
-// tutup kamera otomatis
+// TUTUP CAMERA
 stopScan();
 
-
 }
-
 
 }
 
 );
 
-
 }
+
+
+
+// =====================================================
+// STOP SCAN
+// =====================================================
 
 function stopScan(){
 
-// hentikan ZXing
+// HENTIKAN ZXING
 if(codeReader){
 
 try{
+
 codeReader.reset();
+
 }catch(e){}
 
-codeReader=null;
+codeReader = null;
 
 }
 
 
-// hentikan kamera secara paksa
-const video = document.getElementById("video");
+// HENTIKAN CAMERA
+const video =
+document.getElementById(
+"video"
+);
 
 
 if(video.srcObject){
 
-const tracks = video.srcObject.getTracks();
+const tracks =
+video.srcObject.getTracks();
 
-tracks.forEach(track=>{
+
+tracks.forEach(
+track=>{
 track.stop();
-});
+}
+);
 
-video.srcObject=null;
+
+video.srcObject =
+null;
 
 }
 
 
-// kosongkan video
+// KOSONGKAN VIDEO
 video.pause();
-video.removeAttribute("src");
+
+video.removeAttribute(
+"src"
+);
 
 
-// sembunyikan box kamera
+// SEMBUNYIKAN CAMERA
 const cameraBox =
-document.getElementById("cameraBox");
+document.getElementById(
+"cameraBox"
+);
 
 
-cameraBox.style.display="none";
+cameraBox.style.display =
+"none";
 
 
-// reset status scan
-window.__scanned=false;
-
+// RESET STATUS
+window.__scanned =
+false;
 
 }
+
+
+
+// =====================================================
+// LOAD DATABASE
+// =====================================================
 
 loadData();
+
 
 </script>
 
